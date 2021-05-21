@@ -58,6 +58,16 @@ related book:  **Mining the Social Web: Data Mining Facebook, Twitter, LinkedIn,
 
 拟添加的项目：
 
-  1. 社交关系图绘制
-  2. 爬取技术相关添加（分布式？Splash? Schapy?）
-  3. 聚类、分类的对比挖掘和判断
+    1. 社交关系图绘制
+    2. 爬取技术相关添加（分布式？Splash? Schapy?）
+    3. 聚类、分类的对比挖掘和判断
+
+文件夹结构说明：
+
+    1. WebSpyder 爬取数据的爬虫程序
+    2. FileStore 提供数据存储的接口和类
+    3. Pic jupyter notebook统一的图片存储来源
+    4. Data 爬取的数据集(sql或者csv格式表示)
+    5. result-picture 聚类、词云相关效果图展示
+    6. result 数据集的结果,包括建模结果
+    7. htmlFiles 前端显示的界面网站 
