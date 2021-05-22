@@ -16,7 +16,7 @@ import xlwt
 # driver = webdriver.Chrome()
 
 class WeiboSpyder:
-    def __init__(self, username, password, path, start_y, start_m, start_d, end_y, end_m, end_d):
+    def __init__(self, username, password, path, start_y, start_m, start_d, end_y, end_m, end_d, filename):
         self.username = username
         self.password = password
         self.location = path # webdriver安装到本地路径来
@@ -27,6 +27,7 @@ class WeiboSpyder:
         self.end_y = end_y
         self.end_m = end_m
         self.end_d = end_d
+        self.filename = filename
         self.sheet = None
         self.page = 0
         self.outfile = None
@@ -195,7 +196,7 @@ class WeiboSpyder:
         for i in range(len(name)):
             self.sheet.write(self.row, i, name[i])
         self.row = self.row + 1
-        self.outfile.save("./new疫苗.xls")   ############
+        self.outfile.save(self.filename)   ############
 
 
     # 将dic中的内容写入excel
@@ -208,7 +209,7 @@ class WeiboSpyder:
             for i in range(len(dic[k])):
                 self.sheet.write(self.row, i, dic[k][i])
             self.row = self.row + 1
-        self.outfile.save("./new疫苗.xls")   #############
+        self.outfile.save(self.filename)   #############
 
 
 # 在页面有内容的前提下，获取内容
@@ -365,7 +366,7 @@ if __name__ == '__main__':
     username = ''  # 输入你的用户名
     password = ''  # 输入你的密码
     path = 'chromedriver.exe'
-    weiboSpyder = WeiboSpyder(username, password, path, 2021, 1, 1, 2021, 4, 16)
+    weiboSpyder = WeiboSpyder(username, password, path, 2021, 1, 1, 2021, 4, 16,"data")
     # 操作函数
     weiboSpyder.LoginWeibo()  # 登陆微博
 

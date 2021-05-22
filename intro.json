@@ -1,6 +1,10 @@
 {
-  "username": "13806054591",
-  "password": "ATOMBOMB123abc",
+  "username": "xxx",
+  "password": "xxx",
   "chrome_driver_location": "chromedriver.exe",
-  "useremail":"mlijuyhgt@126.com"
+  "useremail":"mlijuyhgt@126.com",
+  "data_store_location": "Data",
+  "result_analyse_location": "results",
+  "result_picture": "result_picture",
+  "keyword": "中国 人权"
 }
