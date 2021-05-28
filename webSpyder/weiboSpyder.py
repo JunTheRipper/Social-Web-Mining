@@ -49,7 +49,7 @@ class WeiboSpyder:
             # 点击登陆 因无name属性
             try:
                 # 输入验证码
-                time.sleep(15)
+                time.sleep(35)
                 elem_sub.click()
             except:
                 # 不用输入验证码
