@@ -7,7 +7,7 @@ import os
 
 def data_combine(filename):
     '''
-
+    批量处理单个的excel格式文件
     :param filename: str
     :return df_data: pd.DataFrame
     '''
@@ -19,7 +19,7 @@ def data_combine(filename):
 
 def multi_excel_combine(oslist):
     '''
-
+    处理多个EXCEL数据，但是对于csv等格式需要另外处理
     :param oslist: list
     :return dfy: pd.DataFrame
     '''
@@ -29,6 +29,31 @@ def multi_excel_combine(oslist):
         dfx = data_combine(fullname)
         dfy = pd.concat([dfy, dfx], ignore_index=True)
     return dfy
+
+
+def multi_csv_combine(oslist) -> pd.DataFrame:
+    '''
+    处理多个csv格式数据
+    :param oslist:
+    :return:
+    '''
+    dfy = None
+    for shortname in os.listdir(oslist):
+        fullname = oslist + '/' + shortname
+        dfx = pd.read_csv(fullname)
+        dfy = pd.concat([dfy, dfx], ignore_index=True)
+    return dfy
+
+
+def multi_pd_combine(dx, dy) -> pd.DataFrame:
+    '''
+    两个pd.DataFrame格式的结合
+    :param dx: pd.DataFrame
+    :param dy: pd.DataFrame
+    :return:
+    '''
+    df = pd.concat([dx, dy], ignore_index=True)
+    return df
 
 
 def show_nan_data(data):
@@ -89,6 +114,7 @@ def data_cut_weibo(data):
     :return:
     """
     return data.loc[:,['博主昵称','微博内容', '发布时间']]
+
 
 
 def write_into_csv(data, name):
