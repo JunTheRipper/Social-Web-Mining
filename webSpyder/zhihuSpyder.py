@@ -166,7 +166,7 @@ class ZhiHuSpyder:
         import pymongo
         client = pymongo.MongoClient(host='127.0.0.1', port=27017)
         db = client['zhihu']
-        dbcollection = db['zhihuComments']
+        dbcollection = db['zhihu']
         # dbcollection.insert_many()
         for i in range(len(textlist)):
             data = {
@@ -180,6 +180,7 @@ class ZhiHuSpyder:
 if __name__ == '__main__':
     zhihu = ZhiHuSpyder(r'F:\Social-Web-Mining\chromedriver.exe')
 
-    zhihu.getComments()
-    # zhihu.getSpyContent()
+    # zhihu.getComments()
+
+    zhihu.getSpyContent()
     # print(ans.text)

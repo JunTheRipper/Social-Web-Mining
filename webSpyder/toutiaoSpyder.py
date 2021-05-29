@@ -181,7 +181,7 @@ class ToutiaoSpyder:
         print('OK')
 
 if __name__ == '__main__':
-    toutiao = ToutiaoSpyder(r'F:\Social-Web-Mining\chromedriver.exe','核废水')
+    toutiao = ToutiaoSpyder(r'F:\Social-Web-Mining\chromedriver.exe','核排放')
     toutiao.enter_key()
     toutiao.getSpyNews()
     toutiao.getSpyMicro()

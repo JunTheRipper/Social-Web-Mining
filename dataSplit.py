@@ -58,5 +58,7 @@ def dataRandom(filename):
     finally:
         fin.close()
 
-dataRandom("./results/nuclear.csv")
-splitByLineCount('./results/random-nuclear/allnuclearRandom.csv', 2500)#每个小的csv文件存放1000条
+if __name__ == '__main__':
+
+    dataRandom("./results/nuclear.csv")
+    splitByLineCount('./results/random-nuclear/allnuclearRandom.csv', 2500)#每个小的csv文件存放1000条

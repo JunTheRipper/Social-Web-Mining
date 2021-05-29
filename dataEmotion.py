@@ -8,6 +8,7 @@ class DataEmotioner:
     def __init__(self, data):
         self.data = data # data -> pd.DataFrame
         self.score = []
+        self.emaverage = None
 
     def emotion(self):
 
@@ -15,15 +16,12 @@ class DataEmotioner:
             s = SnowNLP(item)
             self.score.append(s.sentiments)
         self.data.loc[:, 'emotion_score'] = self.score
-
+        self.emaverage = self.data['emotion_score'].to_frame().describe()
         return self.data
 
     def store(self, name):
         self.data.to_csv(name)
 
-    def emaverage(self):
-        '''显示相关信息'''
-        return self.data['emotion_score'].to_frame().describe()
 
 if __name__ == "__main__":
     file = pd.read_csv('results/allRightRandom.csv')
@@ -31,4 +29,4 @@ if __name__ == "__main__":
     em = DataEmotioner(file)
     em.emotion()
     em.store('results/random-right/emotion_label.csv')
-    print(em.emaverage())
+    print(em.emaverage)

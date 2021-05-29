@@ -1,12 +1,52 @@
 class FileStore:
-    def __init__(self ,word):
-        pass
+    def __init__(self ,pdword, name):
+        self.pdword = pdword
+        self.name = name # 不要加.csv
 
     def download_as_csv(self):
+        self.pdword.to_csv("results/random-nuclear/Res-Dat/" + self.name+'.csv')
         print("OK")
 
-    def download_into_mongo_db(self):
-        print("Nice")
+    def cmt_download_into_mongo_db(self):
+        import pymongo
+        client = pymongo.MongoClient(host='127.0.0.1', port=27017)
+        db = client['result-data']
+        dbcollection = db[self.name]
+        authorList = self.pdword['author'].values
+        contentList = self.pdword['content'].values
+        timeList = self.pdword['time'].values
+
+        for i in range(len(authorList)):
+            jsdata ={
+                'author':authorList[i],
+                'content':contentList[i],
+                'time':timeList[i]
+            }
+            dbcollection.insert_one(jsdata)
+
+        print("Insert all over!")
+
+    def cmt_download_into_mysql(self, user, passwd, port):
+        import pymysql
+
+        authorList = self.pdword['author'].values
+        contentList = self.pdword['content'].values
+        timeList = self.pdword['time'].values
+
+        db = pymysql.connect(host='127.0.0.1', user=user, password=passwd, db='resultdata', port=3306, charset='utf8')
+        conn = db.cursor()  # 获取指针以操作数据库
+        conn.execute('set names utf8')
+
+        for i in range(len(authorList)):
+            t = [authorList[i], contentList[i], timeList[i]]
+            sql = u"INSERT INTO resultdata(author,content,time) VALUES(%s,%s,%s)"
+
+            conn.execute(sql, t)
+            db.commit()
+
+        conn.close()
+        db.close()
+
 
 if __name__ == '__main__':
     fileStore = FileStore("helloworld")

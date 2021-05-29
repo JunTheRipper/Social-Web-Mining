@@ -134,6 +134,6 @@ def write_into_csv(data, name):
     :param data: pd.DataFrame
     :return: None
     """
-    data.to_csv("results/" + name)
+    data.to_csv("results/random-nuclear/Res-Dat/" + name)
     print("CSV File Stored......")
 
