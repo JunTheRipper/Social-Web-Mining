@@ -13,7 +13,11 @@ class WordCleaner:
         '''
         self.data = data
 
-    def stop_words_data(self) -> None:
+    def stop_words_data(self, filedir) -> None:
+        '''
+        :param filedir:  文件存储的路径（注意，是目录）
+        :return: pd.DataFrame dataframe, 便于后续存入mysql或者mongoDB
+        '''
         # 设置停用词，构建词频矩阵
         stopwords = []
         for word in open('stopwords/baidu_stopwords.txt', 'r', encoding='utf-8'):
@@ -30,10 +34,10 @@ class WordCleaner:
         # part_of_speech
         print("分词切割成功！")
         dataframe = pd.DataFrame({'content': part_of_speech, 'author': username, 'time': date})
-        dataframe.to_csv("results/random-nuclear/cutdataContent.csv", index=False, sep=',')
+        dataframe.to_csv(filedir+"/cutdataContent.csv", index=False, sep=',')
+        return dataframe
 
-
-    def jieba_cut(self) -> None:
+    def jieba_cut(self, filedir) -> None:
 
         # 使用jieba进行词性切分，allowPOS指定允许的词性，这里选择名词n和地名ns
         dataCon = self.data['content']
@@ -52,11 +56,11 @@ class WordCleaner:
                 line_list.append(item[0])
             whole_list.append(line_list)
 
-        with open("results/random-nuclear/entity.txt", "w+", encoding="utf-8") as f:
+        with open(filedir+"/entity.txt", "w+", encoding="utf-8") as f:
             for item in whole_list:
                 f.write(str(item) + ',\n')
 
         dataframe = pd.DataFrame({'content': whole_list, 'author': username, 'time': date})
-        dataframe.to_csv("results/random-nuclear/entity.csv", index=False, sep=',')
+        dataframe.to_csv(filedir+"/entity.csv", index=False, sep=',')
 
         print("实体集获取成功！")
