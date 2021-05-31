@@ -1,0 +1,4 @@
+otherData:其他平台处理的数据，csv格式为主，不是EXCEL 格式有区别！
+mongoData:存放mongoDB格式的数据
+excelData: 存放所有xlsx格式的数据
+整理起来以便于数据预处理技术的使用

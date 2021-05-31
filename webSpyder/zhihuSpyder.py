@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 class ZhiHuSpyder:
     def __init__(self, filename):
         self.filename = filename
-        self.url = 'https://www.zhihu.com/topic/19566105/top-answers'
+        self.url = 'https://www.zhihu.com/topic/19566105/hot'
         self.driver = webdriver.Chrome(executable_path=filename) # Chrome Webdriver
 
 
@@ -40,16 +40,11 @@ class ZhiHuSpyder:
 
     def getSpyContent(self) -> None:
         '''注意: 知乎爬取的文章而不是评论'''
-
-        textlist = []
-        text_name = []
-        text_time = []
-
         self.driver.get(self.url)
         time.sleep(1)
 
         try:
-            for i in range(70):
+            for i in range(250):
                 js = "var q=document.documentElement.scrollTop=10000"
                 self.driver.execute_script(js)
                 time.sleep(1.2)# 加载Ajax
@@ -63,6 +58,10 @@ class ZhiHuSpyder:
 
         for i in range(len(fin)):
             try:
+                textlist = []
+                text_name = []
+                text_time = []
+
                 self.driver.execute_script("arguments[0].focus();", fin[i])
                 text_name.append(self.driver.find_elements_by_xpath('//*[@class="UserLink-link"]')[i].text)
 
@@ -78,9 +77,10 @@ class ZhiHuSpyder:
                 timeline = self.driver.find_elements_by_xpath('//*[@class="ContentItem-time"]')[i]
                 self.driver.execute_script("arguments[0].focus();", timeline)
                 text_time.append(str.split(timeline.text, ' ')[1])
+
+                self.store_mongoDB(textlist, text_name, text_time)
             except:
                 pass
-        self.store_mongoDB(textlist, text_name, text_time)
 
     def parse(self, html_source_code):
         '''
@@ -166,7 +166,7 @@ class ZhiHuSpyder:
         import pymongo
         client = pymongo.MongoClient(host='127.0.0.1', port=27017)
         db = client['zhihu']
-        dbcollection = db['zhihu']
+        dbcollection = db['comment_external02']
         # dbcollection.insert_many()
         for i in range(len(textlist)):
             data = {
@@ -176,6 +176,7 @@ class ZhiHuSpyder:
             }
             dbcollection.insert_one(data)
         print('insert one piece......')
+
 
 if __name__ == '__main__':
     zhihu = ZhiHuSpyder(r'F:\Social-Web-Mining\chromedriver.exe')

@@ -16,11 +16,11 @@ class WordCleaner:
     def stop_words_data(self) -> None:
         # 设置停用词，构建词频矩阵
         stopwords = []
-        for word in open('stopwords/cn_stopwords.txt', 'r', encoding='utf-8'):
+        for word in open('stopwords/baidu_stopwords.txt', 'r', encoding='utf-8'):
             stopwords.append(word.strip())
-        dataCon = self.data['微博内容']
-        username = self.data["博主昵称"]
-        date = self.data["发布时间"]
+        dataCon = self.data['content']
+        username = self.data["author"]
+        date = self.data["time"]
         part_of_speech = []
         for line in dataCon:
             seg_list = psg.cut(line)
@@ -29,14 +29,19 @@ class WordCleaner:
             part_of_speech.append(result)
         # part_of_speech
         print("分词切割成功！")
-        dataframe = pd.DataFrame({'dataContent': part_of_speech, 'username': username, 'date': date})
-        dataframe.to_csv("results/random-nuclear/dataContent.csv", index=False, sep=',')
+        dataframe = pd.DataFrame({'content': part_of_speech, 'author': username, 'time': date})
+        dataframe.to_csv("results/random-nuclear/cutdataContent.csv", index=False, sep=',')
 
 
     def jieba_cut(self) -> None:
 
         # 使用jieba进行词性切分，allowPOS指定允许的词性，这里选择名词n和地名ns
-        dataContent = self.data['微博内容'].values
+        dataCon = self.data['content']
+        username = self.data["author"]
+        date = self.data["time"]
+
+
+        dataContent = self.data['content'].values
 
         whole_list = []
         for line in dataContent:
@@ -50,5 +55,8 @@ class WordCleaner:
         with open("results/random-nuclear/entity.txt", "w+", encoding="utf-8") as f:
             for item in whole_list:
                 f.write(str(item) + ',\n')
+
+        dataframe = pd.DataFrame({'content': whole_list, 'author': username, 'time': date})
+        dataframe.to_csv("results/random-nuclear/entity.csv", index=False, sep=',')
 
         print("实体集获取成功！")

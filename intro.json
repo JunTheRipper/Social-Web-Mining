@@ -1,10 +1,16 @@
 {
-  "username": "xxx",
-  "password": "xxx",
+  "username": "13806054591",
+  "password": "ATOMBOMB123abc",
   "chrome_driver_location": "chromedriver.exe",
   "useremail":"mlijuyhgt@126.com",
   "data_store_location": "Data",
-  "result_analyse_location": "results",
-  "result_picture": "result_picture",
-  "keyword": "中国 人权"
+  "result_analyse_location": "results/random-nuclear/Res-Dat",
+  "result_picture": "results/random-nuclear/Res-Pic",
+  "keyword": "福岛 核",
+  "platformName": "Android",
+  "deviceName": "HWNOH",
+  "appPackage": "com.tencent.mm",
+  "appActivity": "ui.LauncherUI",
+  "noReset": true,
+  "fullReset": false
 }

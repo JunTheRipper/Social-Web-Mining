@@ -27,8 +27,6 @@ def data_renameweibo(df) -> pd.DataFrame:
 
 
 
-
-
 def multi_excel_combine(oslist):
     '''
     处理多个EXCEL数据，但是对于csv等格式需要另外处理
@@ -77,39 +75,58 @@ def show_nan_data(data):
     print(data.isnull().sum())
 
 
-def drop_nan_data(data):
+
+
+def drop_nan_data(data, key=None):
     '''
-    数据去空值
+    数据去空值 —— for 丁香园等一般数据
     :param data: pd.DataFrame
     :return dropped_data: pd.DataFrame
     '''
-    dropped_data = data.dropna(axis=0, subset=["content"])
-    dropped_data.reset_index(drop=True, inplace=True)  # drop=True：删除原行索引；inplace=True:在数据上进行更新
-    print("Data empty report: \n",dropped_data.isnull().any())
-    return dropped_data
+    if key == None:
+        dropped_data = data.dropna(axis=0, subset=["content"])
+        dropped_data.reset_index(drop=True, inplace=True)  # drop=True：删除原行索引；inplace=True:在数据上进行更新
+        print("Data empty report: \n", dropped_data.isnull().any())
+        return dropped_data
+
+    else:
+        dropped_data = data.dropna(axis=0, subset=[key])
+        dropped_data.reset_index(drop=True, inplace=True)  # drop=True：删除原行索引；inplace=True:在数据上进行更新
+        print("Data empty report: \n",dropped_data.isnull().any())
+        return dropped_data
 
 
-def drop_repeat_data(data):
+def drop_repeat_data(data, key=None):
     '''
-    数据去重复值
+    数据去重复值 —— for 丁香园等其他模块
     :param data: pd.DataFrame
     :return dropped_data: pd.DataFrame
     '''
-    unrepeated_data = data.drop_duplicates(['content'], keep='last')
-    unrepeated_data.reset_index(drop=True, inplace=True)  # drop=True：删除原行索引；inplace=True:在数据上进行更新
-    return unrepeated_data
+    if key == None:
+        # 爬微博数据
+        unrepeated_data = data.drop_duplicates(['content'], keep='last')
+        unrepeated_data.reset_index(drop=True, inplace=True)  # drop=True：删除原行索引；inplace=True:在数据上进行更新
+        return unrepeated_data
+    else:
+        unrepeated_data = data.drop_duplicates([key], keep='last')
+        unrepeated_data.reset_index(drop=True, inplace=True)  # drop=True：删除原行索引；inplace=True:在数据上进行更新
+        return unrepeated_data
 
 
-def drop_symbols(data):
+def drop_symbols(data, key=None):
     '''
-
-    数据去特殊值
+    数据去特殊值 —— 一般的未格式化的评论数据
+    :param key: str
     :param data: pd.DataFrame
     :return dropped_data: pd.DataFrame
     '''
-    data['content'] = data['content'].str.replace(r'[^\w]+', '')
-    return data
+    if key == None:
+        data['content'] = data['content'].str.replace(r'[^\w]+', '')
+        return data
 
+    else:
+        data[key] = data[key].str.replace(r'[^\w]+', '')
+        return data
 
 def show_head(data):
     '''
@@ -119,14 +136,17 @@ def show_head(data):
     '''
     print(data.head())
 
-def data_cut(data):
+
+def data_cut(data, lister=None):
     """
     实现数据的截取，只截取微博用户名、用户内容、发布时间3列维度的数据
     :param data:
     :return:
     """
-    return data.loc[:,['author','content', 'time']]
-
+    if lister == None:
+        return data.loc[:,['author','content', 'time']]
+    else:
+        return data.loc[:,lister]
 
 
 def write_into_csv(data, name):
@@ -137,3 +157,10 @@ def write_into_csv(data, name):
     data.to_csv("results/random-nuclear/Res-Dat/" + name)
     print("CSV File Stored......")
 
+def deal_exception(data):
+    '''
+    数据（以丁香园类数据为主）的异常处理技术
+    :param data:
+    :return:
+    '''
+    pass
