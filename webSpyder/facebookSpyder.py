@@ -130,7 +130,7 @@ class FaceBookSpyder:
 
 
 if __name__ == '__main__':
-    f = FaceBookSpyder(r'F:\Social-Web-Mining\chromedriver.exe','mlijuyhgt@126.com','ATOMBOMB123abc','Nuclear pollution')
+    f = FaceBookSpyder(r'F:\Social-Web-Mining\chromedriver.exe','','','Nuclear pollution')
     f.login()
     for i in range(35):
         f.spy()
