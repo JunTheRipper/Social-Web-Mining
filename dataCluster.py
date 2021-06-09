@@ -19,7 +19,11 @@ def tokenizer(sentense):
 
 
 class DataCluster:
-    def __init__(self, data, key):
+    def __init__(self, data: pd.DataFrame, key:str) -> None:
+        '''
+        :param data: 目标pd.DataFrame格式文件
+        :param key: 保存图片名称
+        '''
         self.data = data # 注意：这里是用jieba处理过的词汇dataContent.csv
         self.stopwords = [] #去停用词列表
         for stopword in open('stopwords/baidu_stopwords.txt', 'r', encoding='utf-8'):
@@ -28,8 +32,9 @@ class DataCluster:
         self.key = key
 
     def generate_wordcountvector(self) -> np.ndarray:
+        '''获取社交评论的词频矩阵'''
         count = CountVectorizer(tokenizer=tokenizer, stop_words=list(self.stopwords))
-        countvector = count.fit_transform(self.data['dataContent']).toarray()
+        countvector = count.fit_transform(self.data['content']).toarray()
         # print(countvector)
         self.countvector = countvector
         return countvector
@@ -65,8 +70,8 @@ class DataCluster:
         # print(self.X_pca_frame)
         return self.X_pca_frame
 
-    def cluster_comment(self):
-        '''聚类结果评价'''
+    def elbow_cluster_comment(self):
+        '''聚类结果评价—— 肘部法+轮廓系数'''
         plotlist = []
         for k in range(2, 10):
             est = KMeans(n_clusters=k, random_state=0).fit(self.X_pca)
@@ -74,7 +79,7 @@ class DataCluster:
 
         plt.plot(range(2, 10), plotlist, 'o-')
         plt.xlabel('k')
-        plt.savefig(self.key+'-cluster.png',dpi=600)
+        plt.savefig(self.key+'-KMEANS-cluster.png',dpi=600)
 
         from sklearn.metrics import silhouette_score
         silscore = []

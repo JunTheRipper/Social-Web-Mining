@@ -29,7 +29,13 @@ def mkSubFile(lines, head, srcName, sub):
         fout.close()
 
 
-def splitByLineCount(filename, count):
+def splitByLineCount(filename: str, count: int):
+    '''
+
+    :param filename:  写入的目标csv文件
+    :param count:
+    :return:
+    '''
     fin = open(filename, encoding="utf8")
     try:
         head = fin.readline()
@@ -45,16 +51,21 @@ def splitByLineCount(filename, count):
     finally:
         fin.close()
 
-def dataRandom(filename):
+def dataRandom(filename: str, writename = None):
     fin = open(filename, encoding="utf8")
     try:
         head = fin.readline()
         lines = fin.readlines()
         random.shuffle(lines)
 
-        with open("./results/random-nuclear/allnuclearRandom.csv", 'w', encoding='utf8') as f:
-            f.write(head)
-            f.writelines(lines)
+        if writename == None:
+            with open("./results/random-nuclear/allnuclearRandom.csv", 'w', encoding='utf8') as f:
+                f.write(head)
+                f.writelines(lines)
+        else:
+            with open(writename, 'w', encoding='utf8') as f:
+                f.write(head)
+                f.writelines(lines)
     finally:
         fin.close()
 

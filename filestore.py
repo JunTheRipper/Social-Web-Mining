@@ -1,10 +1,13 @@
 class FileStore:
-    def __init__(self ,pdword, name):
-        self.pdword = pdword
+    def __init__(self, data, name):
+        self.pdword = data
         self.name = name # 不要加.csv
 
-    def download_as_csv(self):
-        self.pdword.to_csv("results/random-nuclear/Res-Dat/" + self.name+'.csv')
+    def download_as_csv(self, filename: str = None):
+        if not filename is None:
+            self.pdword.to_csv(filename + self.name+'.csv')
+        else:
+            self.pdword.to_csv("results/random-nuclear/Res-Dat/" + self.name+'.csv')
         print("OK")
 
     def cmt_download_into_mongo_db(self):
@@ -26,14 +29,14 @@ class FileStore:
 
         print("Insert all over!")
 
-    def cmt_download_into_mysql(self, user, passwd, port):
+    def cmt_download_into_mysql(self, user:str, passwd:str, port:int = 3306):
         import pymysql
 
         authorList = self.pdword['author'].values
         contentList = self.pdword['content'].values
         timeList = self.pdword['time'].values
 
-        db = pymysql.connect(host='127.0.0.1', user=user, password=passwd, db='resultdata', port=3306, charset='utf8')
+        db = pymysql.connect(host='127.0.0.1', user=user, password=passwd, db='resultdata', port=port, charset='utf8')
         conn = db.cursor()  # 获取指针以操作数据库
         conn.execute('set names utf8')
 

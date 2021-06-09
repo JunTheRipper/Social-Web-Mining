@@ -1,13 +1,15 @@
 import jieba
 import matplotlib.pyplot as plt
+import pandas as pd
 from wordcloud import WordCloud
+import jieba.analyse
 
 
 class DataVisitor:
-    def __init__(self, data):
+    def __init__(self, data: pd.DataFrame):
         self.data = data
 
-    def show_word_cloud(self, font_name, pic_name, write_name,write_cloud_name):
+    def show_word_cloud(self, font_name:str, pic_name:str, write_name:str,write_cloud_name:str) -> list:
         '''
         :param font_name:  字体存储路径(.ttc)
         :param pic_name:   图片存储路径(.png/.jpg)
@@ -15,7 +17,7 @@ class DataVisitor:
         :param write_cloud_name:  词云图片生成路径(.png)
         :return:
         '''
-        cluster1 = ' '.join(self.data['微博内容'].values)
+        cluster1 = ' '.join(self.data['content'].values)
 
         kw1 = jieba.analyse.textrank(cluster1, topK=50, withWeight=True, allowPOS=('ns', 'n'))
         words_frequence = {x[0]: x[1] for x in kw1}
@@ -31,3 +33,5 @@ class DataVisitor:
         wordcloud = wordcloud.fit_words(words_frequence)
         plt.imshow(wordcloud)
         plt.savefig(write_cloud_name,dpi=600)
+
+        return words_frequence

@@ -14,7 +14,7 @@ result_picture = json_data['result_picture']
 keyword = json_data['keyword']
 
 #
-weiboSpyder = WeiboSpyder(username, password, webdriver_path, 2011, 5, 1, 2014, 5, 29,"Data/2.xls")
+weiboSpyder = WeiboSpyder(username, password, webdriver_path, 2018, 10, 1, 2020, 12, 30,"Data/tt.xls")
 weiboSpyder.LoginWeibo()
 weiboSpyder.GetSearchContent(keyword)
 import os
@@ -70,3 +70,7 @@ import wordCleaner
 # dfAB = dp.multi_pd_combine(dfA, dfB)
 # dfABC = dp.multi_pd_combine(dfAB, mg)
 # print(dfABC.head())
+
+import filestore as fs
+a = fs.FileStore('processed-content-data')
+a.download_as_csv()
