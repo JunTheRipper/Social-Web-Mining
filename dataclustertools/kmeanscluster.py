@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import numpy as np
+import seaborn as sns
+sns.set_style(style="darkgrid")
 
 class KMeansController:
     def __init__(self, data: pd.DataFrame, PCA_data: pd.DataFrame):
@@ -50,13 +52,12 @@ class KMeansController:
         plt.plot(range(2, 10), silscore, 'o-')
         plt.xlabel('k')
 
-
         if not savelocation is None:
             plt.savefig(savelocation + savename+'-silhouette-KMEANS-cluster.png', dpi=600)
         else:
             plt.show()
 
-    def Calinski_Harabaz_comment(self):
+    def calinski_Harabaz_comment(self):
         '''
         Calinski-Harabaz指数也可以用来选择最佳聚类数目，
         且运算速度远高于轮廓系数。
@@ -69,7 +70,6 @@ class KMeansController:
             est = KMeans(n_clusters=k, random_state=4).fit(self.PCA_data)
             score = calinski_harabasz_score(self.PCA_data, est.labels_)
             print('聚类%d簇的calinski_harabasz分数为：%f' % (k, score))
-
 
 
     def cluster_KMeans(self, number: int) -> pd.DataFrame:
@@ -85,19 +85,37 @@ class KMeansController:
         # 获取数据标签值
         kmeans_clustering_labels = pd.DataFrame(est.labels_, columns=['cluster'])
         # 将聚类结果与降维特征数据进行拼接
-        self.X_pca_frame = pd.concat([self.X_pca_frame, kmeans_clustering_labels], axis=1)
+        self.PCA_data = pd.concat([self.PCA_data, kmeans_clustering_labels], axis=1)
         # print(self.X_pca_frame)
         self.data = pd.concat([self.data, kmeans_clustering_labels], axis=1)
-        return self.X_pca_frame
+        return self.PCA_data
 
-    def show_scatter_result(self, dimension: int = 3):
+    def show_scatter_result(self, dimension: int = 3, savelocation = None, savename = None):
         '''
         散点图显示大致的聚类情况
         :param dimension: 维度，默认为3 表示散点图是3D的，反正2 2D
         :return: 散点图
         '''
+        if dimension == 3:
+            from mpl_toolkits.mplot3d import Axes3D
+            cluster_1_color = {0: 'red', 1: 'green', 2: 'blue', 3: 'yellow', 4: 'cyan', 5: 'black', 6: 'magenta',
+                               7: '#fff0f5', 8: '#ffdab9', 9: '#ffa500'}
+            colors_clustered_data = self.PCA_data['cluster'].map(cluster_1_color)
+            fig_clustered_data = plt.figure()
+            ax_clustered_data = fig_clustered_data.add_subplot(111, projection='3d')
+            ax_clustered_data.scatter(self.PCA_data['pca_1'].values, self.PCA_data['pca_2'].values,
+                                      self.PCA_data['pca_3'].values, c=colors_clustered_data)
+            ax_clustered_data.set_xlabel('Component 1')
+            ax_clustered_data.set_ylabel('Component 2')
+            ax_clustered_data.set_zlabel('Component 3')
 
-        pass
+            if not savelocation is None:
+                plt.savefig(savelocation + savename + '-silhouette-KMEANS-cluster.png', dpi=600)
+            else:
+                plt.show()
+
+        else:
+            pass
 
     def show_data(self) -> pd.DataFrame:
         '''
