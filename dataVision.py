@@ -9,7 +9,8 @@ class DataVisitor:
     def __init__(self, data: pd.DataFrame):
         self.data = data
 
-    def show_word_cloud(self, font_name:str, pic_name:str, write_name:str,write_cloud_name:str) -> list:
+    def show_word_cloud(self, font_name:str, pic_name:str,
+                        write_name:str,write_cloud_name:str) -> list:
         '''
         :param font_name:  字体存储路径(.ttc)
         :param pic_name:   图片存储路径(.png/.jpg)
@@ -19,7 +20,8 @@ class DataVisitor:
         '''
         cluster1 = ' '.join(self.data['content'].values)
 
-        kw1 = jieba.analyse.textrank(cluster1, topK=50, withWeight=True, allowPOS=('ns', 'n'))
+        kw1 = jieba.analyse.textrank(cluster1, topK=50,
+                                     withWeight=True, allowPOS=('ns', 'n'))
         words_frequence = {x[0]: x[1] for x in kw1}
         print(words_frequence)
         with open(write_name,'w') as f:
@@ -29,7 +31,9 @@ class DataVisitor:
         # 若是有中文的话，font_path ='simsun.ttc'必须添加，不然会出现方框，不出现汉字
         # simsun.ttc为汉字编码文件，可以从本地windows系统找一个汉字编码文件上传， 如C:\\Windows\Fonts下有许多汉字编码文件
 
-        wordcloud = WordCloud(font_path=font_name, mask=backgroud_Image, repeat=True, background_color='white')
+        wordcloud = WordCloud(font_path=font_name,
+                              mask=backgroud_Image, repeat=True,
+                              background_color='white')
         wordcloud = wordcloud.fit_words(words_frequence)
         plt.imshow(wordcloud)
         plt.savefig(write_cloud_name,dpi=600)
