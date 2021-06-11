@@ -30,7 +30,8 @@ class KMeansController:
         plt.xlabel('k')
 
         if not savelocation is None:
-            plt.savefig(savelocation + savename+'-elbow-KMEANS-cluster.png', dpi=600)
+            plt.savefig(savelocation + savename+'-elbow-KMEANS-cluster.png',
+                        dpi=600)
         else:
             plt.show()
 
@@ -87,8 +88,9 @@ class KMeansController:
         # 将聚类结果与降维特征数据进行拼接
         self.PCA_data = pd.concat([self.PCA_data, kmeans_clustering_labels], axis=1)
         # print(self.X_pca_frame)
-        self.data = pd.concat([self.data, kmeans_clustering_labels], axis=1)
-        return self.PCA_data
+        t = self.data
+        t = pd.concat([t, kmeans_clustering_labels], axis=1)
+        return t
 
     def show_scatter_result(self, dimension: int = 3, savelocation = None, savename = None):
         '''
