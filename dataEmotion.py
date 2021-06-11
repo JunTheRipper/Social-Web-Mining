@@ -12,7 +12,7 @@ class DataEmotioner:
 
     def emotion(self):
 
-        for item in self.data['微博内容']:
+        for item in self.data['content']:
             s = SnowNLP(item)
             self.score.append(s.sentiments)
         self.data.loc[:, 'emotion_score'] = self.score
