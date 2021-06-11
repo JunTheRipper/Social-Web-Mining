@@ -1,13 +1,21 @@
+import pandas as pd
+
+
 class FileStore:
-    def __init__(self, data, name):
+    def __init__(self, data: pd.DataFrame, name: str):
+        '''
+        :param data:  预存储数据
+        :param name:  存储的csv名称(不用加路径，只写存储名称)
+        '''
         self.pdword = data
         self.name = name # 不要加.csv
 
     def download_as_csv(self, filename: str = None):
         if not filename is None:
-            self.pdword.to_csv(filename + self.name+'.csv')
+            self.pdword.to_csv(filename + self.name+'.csv', index=False)
         else:
-            self.pdword.to_csv("results/random-nuclear/Res-Dat/" + self.name+'.csv')
+            self.pdword.to_csv("results/random-nuclear/Res-Dat/" +
+                               self.name+'.csv', index=False)
         print("OK")
 
     def cmt_download_into_mongo_db(self):
@@ -36,7 +44,8 @@ class FileStore:
         contentList = self.pdword['content'].values
         timeList = self.pdword['time'].values
 
-        db = pymysql.connect(host='127.0.0.1', user=user, password=passwd, db='resultdata', port=port, charset='utf8')
+        db = pymysql.connect(host='127.0.0.1', user=user, password=passwd,
+                             db='resultdata', port=port, charset='utf8')
         conn = db.cursor()  # 获取指针以操作数据库
         conn.execute('set names utf8')
 
