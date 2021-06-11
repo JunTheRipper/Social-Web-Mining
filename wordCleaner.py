@@ -1,9 +1,10 @@
+import numpy as np
 import pandas as pd
 import jieba
 import jieba.analyse
 import jieba.posseg as psg
 import filestore
-# 字符处理器 实现jiaba 分词化和去停用词技术
+# 字符处理器 实现jiaba 分词化和去停用词,构建词频矩阵等等技术
 
 def duplicate_removal(str1:str)->str:
     list=str1.split(" ")
@@ -17,12 +18,14 @@ def duplicate_removal(str1:str)->str:
     return result
 
 
+
 class WordCleaner:
     def __init__(self, data:str):
         '''
         :param data: -> pd.DataFrame
         '''
         self.data = data
+        self.new_data = None
 
     def stop_words_data(self, filedir:str) -> pd.DataFrame:
         '''
@@ -64,7 +67,8 @@ class WordCleaner:
         whole_list = []
         for line in dataContent:
             line_list = []
-            kw = jieba.analyse.extract_tags(line, topK=50, withWeight=True, allowPOS=('n', 'ns'))
+            kw = jieba.analyse.extract_tags(line, topK=50, withWeight=True,
+                                            allowPOS=('n', 'ns'))
 
             for item in kw:
                 line_list.append(item[0])
@@ -101,8 +105,31 @@ class WordCleaner:
             "time": timeList
         }
 
-        data = pd.DataFrame(list)
+        self.new_data = pd.DataFrame(list)
         # a = filestore.FileStore(self.data, 'dup_CutDataContent')
         # a.download_as_csv()
-        data.to_csv(filedir+"/newCutDataContent.csv", index=False)
-        return data
+        self.new_data.to_csv(filedir+"/newCutDataContent.csv", index=False)
+        return self.new_data
+
+
+def tokenizer(sentense):
+    # 分词切割技术
+    words = []
+    cut = jieba.cut(sentense)
+    for word in cut:
+        words.append(word)
+    return words
+
+
+def generate_wordcountvector(data: pd.DataFrame) -> np.ndarray:
+    '''获取社交评论的词频矩阵'''
+    stopwords = []  # 去停用词列表
+    for stopword in open('stopwords/baidu_stopwords.txt', 'r', encoding='utf-8'):
+        stopwords.append(stopword.strip())
+
+    from sklearn.feature_extraction.text import CountVectorizer
+
+    count = CountVectorizer(tokenizer=tokenizer, stop_words=list(stopwords))
+    countvector = count.fit_transform(data['content']).toarray()
+
+    return countvector
