@@ -2,22 +2,22 @@ import json
 from webSpyder.weiboSpyder import WeiboSpyder
 import pandas as pd
 
-with open("intro.json","r",encoding="utf-8") as f:
-    json_data = json.load(f)
-username = json_data['username']
-password = json_data['password']
-webdriver_path = json_data['chrome_driver_location']
-useremail = json_data['useremail']
-data_store_location = json_data['data_store_location']
-result_analyse_location = json_data['result_analyse_location']
-result_picture = json_data['result_picture']
-keyword = json_data['keyword']
+# with open("intro.json","r",encoding="utf-8") as f:
+#     json_data = json.load(f)
+# username = json_data['username']
+# password = json_data['password']
+# webdriver_path = json_data['chrome_driver_location']
+# useremail = json_data['useremail']
+# data_store_location = json_data['data_store_location']
+# result_analyse_location = json_data['result_analyse_location']
+# result_picture = json_data['result_picture']
+# keyword = json_data['keyword']
 
 #
-weiboSpyder = WeiboSpyder(username, password, webdriver_path, 2018, 10, 1, 2020, 12, 30,"Data/tt.xls")
-weiboSpyder.LoginWeibo()
-weiboSpyder.GetSearchContent(keyword)
-import os
+# weiboSpyder = WeiboSpyder(username, password, webdriver_path, 2018, 10, 1, 2020, 12, 30,"Data/tt.xls")
+# weiboSpyder.LoginWeibo()
+# weiboSpyder.GetSearchContent(keyword)
+# import os
 
 
 # file_list ="Data/weiboSpy"
@@ -30,7 +30,6 @@ import os
 # data = data_cut_weibo(data)
 # write_into_csv(data, 'nuclear.csv')
 
-import wordCleaner
 # from wordCleaner import WordCleaner
 # data = pd.read_csv("results/random-nuclear/allnuclearRandom.csv",encoding="utf-8")
 #
@@ -71,6 +70,32 @@ import wordCleaner
 # dfABC = dp.multi_pd_combine(dfAB, mg)
 # print(dfABC.head())
 
-import filestore as fs
-a = fs.FileStore('processed-content-data')
-a.download_as_csv()
+import pandas as pd
+dfT = pd.read_csv(r"results/random-nuclear/Res-Dat/processed-content-data.csv")
+dfT['time'] = dfT['time'].str.replace("年","-").str.replace("月","-").str.replace("日","")
+data  =dfT
+data['time'] = data['time'].str.replace("年", "-").str.replace("月", "-").str.replace("日", "")
+
+datelist = []
+for date in data['time'].values:
+    if date[2] == ":":
+            # 只显示时间，是今天
+        date = "2021-05-30"
+    if date[:2] == "昨天":
+        date = "2021-05-29"
+    if date[:2] == "前天":
+        date = "2021-05-28"
+
+    if date[:2] == "今天":
+        date = "2021-05-30"
+    if not date[:2] == "20":
+        date = "2021-" + date
+    if date[-1] == "前":
+        date = "2021-05-30"
+    datelist.append(date)
+
+data['time'] = datelist
+
+import dataProcessing
+f = dataProcessing.time_stamp(data, sorted=True)
+print(f)
