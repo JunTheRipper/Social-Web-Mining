@@ -2,6 +2,7 @@
 import pandas as pd
 import collections
 import os
+import datetime
 # deal with excel and etc.
 
 
@@ -75,8 +76,6 @@ def show_nan_data(data: pd.DataFrame) -> None:
     print(data.isnull().sum())
 
 
-
-
 def drop_nan_data(data: pd.DataFrame, key:str=None):
     '''
     数据去空值 —— for 丁香园等一般数据
@@ -85,7 +84,8 @@ def drop_nan_data(data: pd.DataFrame, key:str=None):
     '''
     if key == None:
         dropped_data = data.dropna(axis=0, subset=["content"])
-        dropped_data.reset_index(drop=True, inplace=True)  # drop=True：删除原行索引；inplace=True:在数据上进行更新
+        dropped_data.reset_index(drop=True, inplace=True)
+        # drop=True：删除原行索引；inplace=True:在数据上进行更新
         print("Data empty report: \n", dropped_data.isnull().any())
         return dropped_data
 
@@ -114,10 +114,10 @@ def drop_repeat_data(data: pd.DataFrame, key: str = None):
         return unrepeated_data
 
 
-def drop_symbols(data, key=None):
+def drop_symbols(data: pd.DataFrame, key: str=None):
     '''
     数据去特殊值 —— 一般的未格式化的评论数据
-    :param key: str
+    :param key: str 特定标注的关键词
     :param data: pd.DataFrame
     :return dropped_data: pd.DataFrame
     '''
@@ -151,13 +151,69 @@ def data_cut(data, lister=None) -> pd.DataFrame:
         return data.loc[:,lister]
 
 
-def write_into_csv(data, name):
+def time_composition(data:pd.DataFrame,
+                     strTime: str = datetime.date.today().strftime("%Y-%m-%d")) \
+        -> pd.DataFrame:
+    '''
+    社交媒体时间统一整合处理
+    :param strTime:  输入当前日期，对日期数据处理(昨天、前天这类数据)
+    :param data:  原始未处理的数据
+    :return: data1 返回生成的列表数据
+    说明这边的数据需要灵活处理
+    '''
+    data['time'] = data['time'].str.replace("年", "-").str.replace("月", "-")\
+        .str.replace("日", "")
+
+    datelist = []
+    for date in data['time'].values:
+        if date[2] == ":":
+            # 只显示时间，是今天
+            date = strTime
+        if date[:2] == "昨天":
+            oneday = datetime.timedelta(days=1)
+            yes = datetime.date.today() - oneday
+            date = yes.strftime("%Y-%m-%d")
+        if date[:2] == "前天":
+            oneday = datetime.timedelta(days=2)
+            yes = datetime.date.today() - oneday
+            date = yes.strftime("%Y-%m-%d")
+
+        if date[:2] == "今天":
+            date = strTime
+        if not date[:2] == "20":
+            date = "2021-" + date
+        if date[-1] == "前":
+            date = strTime
+        datelist.append(date)
+
+    data['time'] = datelist
+    return data
+
+
+def write_into_csv(data: pd.DataFrame, name: str, location: str = "results/random-nuclear/Res-Dat/"):
     """
+    :param name: 存储csv文件名称
     :param data: pd.DataFrame
     :return: None
     """
-    data.to_csv("results/random-nuclear/Res-Dat/" + name)
+    data.to_csv(location + name, index = False)
     print("CSV File Stored......")
+
+
+def time_stamp(data: pd.DataFrame, sorted=False):
+    '''
+    时间级别数据格式整理和按照时间序列排序
+    :param sorted:
+    :param data:
+    :return:
+    '''
+    data['time'] = pd.to_datetime(data['time'])
+    if sorted == False:
+        return data
+    else:
+        data.sort_values('time', inplace=True)
+        return data
+
 
 
 def deal_exception(data: pd.DataFrame):
