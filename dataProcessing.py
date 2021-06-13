@@ -24,7 +24,8 @@ def data_renameweibo(df:pd.DataFrame) -> pd.DataFrame:
     :param df: 初始的pandas.DataFrame
     :return:
     '''
-    return df.rename(columns={'微博内容':'content', '博主昵称':'author', '发布时间':'time'})
+    return df.rename(columns={
+        '微博内容':'content', '博主昵称':'author', '发布时间':'time'})
 
 
 
@@ -91,7 +92,8 @@ def drop_nan_data(data: pd.DataFrame, key:str=None):
 
     else:
         dropped_data = data.dropna(axis=0, subset=[key])
-        dropped_data.reset_index(drop=True, inplace=True)  # drop=True：删除原行索引；inplace=True:在数据上进行更新
+        dropped_data.reset_index(drop=True, inplace=True)
+        # drop=True：删除原行索引；inplace=True:在数据上进行更新
         print("Data empty report: \n",dropped_data.isnull().any())
         return dropped_data
 
